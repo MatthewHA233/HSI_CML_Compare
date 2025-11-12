@@ -1,0 +1,5 @@
+InstitutionID [公司ID] - 
+Symbol [股票代码] - 
+ShortName [公司简称] - 
+DelistedDate [退市时间] - 
+SecurityID [证券ID] - 

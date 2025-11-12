@@ -1,0 +1,7 @@
+TradingDate [交易日期] - 
+Symbol [股票代码] - 
+InstitutionID [公司ID] - 
+SecurityID [证券ID] - 
+ClosePrice [收盘价] - 
+Change [涨跌] - 
+ChangeRatio [涨跌幅] - 
