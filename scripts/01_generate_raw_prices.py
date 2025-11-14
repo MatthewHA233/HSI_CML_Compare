@@ -168,6 +168,21 @@ def main():
     df_2019 = pd.concat(df_2019_list, ignore_index=True) if df_2019_list else None
     df_2023 = pd.concat(df_2023_list, ignore_index=True) if df_2023_list else None
 
+    # 在各时段内去重（因为边界股票可能在相邻part文件中重复）
+    if df_2019 is not None:
+        before_dedup_2019 = len(df_2019)
+        df_2019 = df_2019.drop_duplicates(subset='Symbol', keep='first')
+        after_dedup_2019 = len(df_2019)
+        if before_dedup_2019 != after_dedup_2019:
+            print(f"  2019-2022时段去重: {before_dedup_2019 - after_dedup_2019} 条")
+
+    if df_2023 is not None:
+        before_dedup_2023 = len(df_2023)
+        df_2023 = df_2023.drop_duplicates(subset='Symbol', keep='first')
+        after_dedup_2023 = len(df_2023)
+        if before_dedup_2023 != after_dedup_2023:
+            print(f"  2023-2025时段去重: {before_dedup_2023 - after_dedup_2023} 条")
+
     print(f"  2019-2022时段: {len(df_2019) if df_2019 is not None else 0} 只股票")
     print(f"  2023-2025时段: {len(df_2023) if df_2023 is not None else 0} 只股票")
 
