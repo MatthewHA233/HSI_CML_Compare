@@ -39,3 +39,6 @@ wheels/
 venv/
 env/
 ENV/
+
+# 处理后的数据文件
+处理后数据/
