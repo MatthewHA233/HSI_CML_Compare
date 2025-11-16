@@ -271,7 +271,7 @@ def main():
 
     # 生成分析报告
     print("\n生成分析报告...")
-    report_file = project_root / "处理后数据" / "数据分析报告.txt"
+    report_file = project_root / "处理后数据" / "raw_数据分析报告.txt"
 
     with open(report_file, 'w', encoding='utf-8') as f:
         f.write("=" * 80 + "\n")
@@ -435,7 +435,7 @@ def main():
 
         f.write(f"\n合并CSV文件 (处理后数据/):\n")
         f.write(f"  - raw_prices.csv\n")
-        f.write(f"  - 数据分析报告.txt (本报告)\n\n")
+        f.write(f"  - raw_数据分析报告.txt (本报告)\n\n")
 
         f.write("=" * 80 + "\n")
         f.write("报告结束\n")
