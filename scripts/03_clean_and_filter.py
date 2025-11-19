@@ -80,61 +80,22 @@ def main():
     print(f"  剔除股票: {(~good_stocks).sum():,} 只")
     print()
 
-    # 3. 处理剩余缺失值（前向填充）
-    print("【3. 处理剩余缺失值】")
+    # 3. 检查剩余缺失值（不填充，只统计）
+    print("【3. 检查剩余缺失值】")
     price_data_filtered = df_filtered[date_cols]
 
-    before_fill = price_data_filtered.isnull().sum().sum()
-    print(f"  填充前缺失值: {before_fill:,} 个")
-
-    # 前向填充（每行独立，按日期顺序）
-    price_data_filled = price_data_filtered.fillna(method='ffill', axis=1)
-
-    # 如果首日缺失，使用后向填充
-    price_data_filled = price_data_filled.fillna(method='bfill', axis=1)
-
-    after_fill = price_data_filled.isnull().sum().sum()
-    print(f"  填充后缺失值: {after_fill:,} 个")
-    print(f"  填充成功: {before_fill - after_fill:,} 个")
-
-    if after_fill > 0:
-        print(f"  警告: 仍有 {after_fill} 个缺失值（可能整行数据缺失）")
-        # 删除仍有缺失的股票
-        complete_stocks = ~price_data_filled.isnull().any(axis=1)
-        df_filtered = df_filtered[complete_stocks].copy()
-        price_data_filled = price_data_filled[complete_stocks].copy()
-        print(f"  删除完全缺失的股票: {(~complete_stocks).sum()} 只")
-        print(f"  最终保留: {len(df_filtered):,} 只")
-
+    missing_count = price_data_filtered.isnull().sum().sum()
+    print(f"  剩余缺失值: {missing_count:,} 个")
+    print(f"  说明: 缺失值将在计算收益率时处理（令收益率=0）")
     print()
 
-    # 4. 去除极端异常值（winsorize）
-    print("【4. 去除极端异常值】")
-    print(f"  方法: Winsorize (上下各 {WINSORIZE_LIMITS[0] * 100:.0f}%)")
-
-    # 对每只股票的价格序列进行winsorize
-    price_data_winsorized = price_data_filled.copy()
-
-    extreme_count = 0
-    for idx in range(len(price_data_winsorized)):
-        row = price_data_winsorized.iloc[idx].values
-        # 只对非零值进行winsorize
-        non_zero_mask = row > 0
-        if non_zero_mask.sum() > 10:  # 至少有10个非零值才处理
-            original = row.copy()
-            row_winsorized = winsorize(row[non_zero_mask], limits=WINSORIZE_LIMITS)
-            row[non_zero_mask] = row_winsorized
-            extreme_count += (original != row).sum()
-            price_data_winsorized.iloc[idx] = row
-
-    print(f"  处理异常值: {extreme_count:,} 个")
-    print()
-
-    # 5. 合并info和处理后的价格数据
-    print("【5. 生成清洗后数据】")
+    # 4. 生成清洗后数据（保留价格的NaN和0）
+    print("【4. 生成清洗后数据】")
+    print(f"  说明: 价格数据不做填充和Winsorize处理")
+    print(f"  说明: 所有数据处理将在收益率层面进行")
     df_cleaned = pd.concat([
         df_filtered[info_cols].reset_index(drop=True),
-        price_data_winsorized.reset_index(drop=True)
+        price_data_filtered.reset_index(drop=True)
     ], axis=1)
 
     # 保存

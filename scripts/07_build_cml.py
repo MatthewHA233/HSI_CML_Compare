@@ -39,7 +39,7 @@ OUTPUT_REPORT = BASE_DIR / "处理后数据" / "07_资本市场线" / r"cml_数�
 # 参数配置
 RISK_FREE_RATE = 0.025  # 无风险利率2.5%
 USE_POSITIVE_RETURN_ONLY = False  # 使用全部股票（与步骤6保持一致）
-TOP_N_STOCKS = None  # 使用全部2092只股票
+TOP_N_STOCKS = 1400  # 接近交易日数量（1476天），确保样本充足性
 
 
 def main():

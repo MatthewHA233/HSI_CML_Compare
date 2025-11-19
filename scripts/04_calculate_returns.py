@@ -23,6 +23,7 @@ import pandas as pd
 import numpy as np
 from pathlib import Path
 from datetime import datetime
+from scipy.stats.mstats import winsorize
 import warnings
 
 warnings.filterwarnings('ignore')
@@ -37,6 +38,7 @@ OUTPUT_REPORT = BASE_DIR / "处理后数据" / "04_收益率" / r"returns_数据
 
 # 参数配置
 TRADING_DAYS_PER_YEAR = 252  # 年化交易日数
+WINSORIZE_LIMITS = (0.01, 0.01)  # Winsorize极端值处理（上下各1%）
 
 
 def calculate_log_returns(prices_df, info_cols):
@@ -53,26 +55,46 @@ def calculate_log_returns(prices_df, info_cols):
     """
     # 分离价格数据
     date_cols = [col for col in prices_df.columns if col not in info_cols]
-    price_data = prices_df[date_cols]
+    price_data = prices_df[date_cols].values  # 转为numpy数组便于处理
 
     # 计算对数收益率：r_t = ln(P_t / P_t-1)
-    # 使用 shift 方法：每列向右移一位
-    price_shifted = price_data.shift(1, axis=1)
+    # 核心规则（金融计量标准做法）：
+    # 1. 如果 P(t-1) 缺失或为0 → return = 0（分母为0）
+    # 2. 如果 P(t) 缺失 → return = 0（当日无交易）
+    # 3. 否则正常计算 ln(P(t) / P(t-1))
+    # 4. 不改变价格本身，只在计算收益率时处理
 
-    # 对数收益率
-    returns_data = np.log(price_data / price_shifted)
+    n_stocks, n_days = price_data.shape
+    returns_data = np.zeros((n_stocks, n_days - 1))  # 初始化为0
 
-    # 删除第一列（首日无前值）
-    returns_data = returns_data.iloc[:, 1:]
-    date_cols = date_cols[1:]
+    # 逐只股票计算收益率
+    for i in range(n_stocks):
+        prices = price_data[i, :]
+        for t in range(1, n_days):
+            p_t = prices[t]
+            p_t_1 = prices[t-1]
+
+            # 核心逻辑：处理分母为0或缺失的情况
+            if pd.isna(p_t_1) or p_t_1 <= 0:
+                returns_data[i, t-1] = 0.0  # 分母为0，收益率为0
+            elif pd.isna(p_t) or p_t <= 0:
+                returns_data[i, t-1] = 0.0  # 当日价格缺失，收益率为0
+            else:
+                returns_data[i, t-1] = np.log(p_t / p_t_1)  # 正常计算
+
+    # 转回DataFrame
+    returns_df_data = pd.DataFrame(
+        returns_data,
+        columns=date_cols[1:]  # 删除首日
+    )
 
     # 合并info和收益率
     returns_df = pd.concat([
         prices_df[info_cols].reset_index(drop=True),
-        returns_data.reset_index(drop=True)
+        returns_df_data
     ], axis=1)
 
-    return returns_df, date_cols
+    return returns_df, date_cols[1:]
 
 
 def main():
@@ -103,15 +125,41 @@ def main():
     # 统计收益率
     returns_data = df_returns[date_cols]
 
-    # 处理inf和-inf（可能由零价格导致）
+    # 处理inf和-inf（理论上不应出现，因为已在计算时处理）
     inf_count = np.isinf(returns_data.values).sum()
     if inf_count > 0:
-        print(f"  警告: 发现 {inf_count} 个无穷值，将替换为NaN")
-        returns_data = returns_data.replace([np.inf, -np.inf], np.nan)
+        print(f"  警告: 发现 {inf_count} 个无穷值，将替换为0")
+        returns_data = returns_data.replace([np.inf, -np.inf], 0.0)
 
-    # 统计
-    all_returns = returns_data.values.flatten()
-    all_returns = all_returns[~np.isnan(all_returns)]
+    print()
+
+    # 对收益率进行Winsorize处理（处理极端值）
+    print("【对收益率进行Winsorize处理】")
+    print(f"  方法: Winsorize (上下各 {WINSORIZE_LIMITS[0] * 100:.0f}%)")
+
+    returns_data_winsorized = returns_data.copy()
+    extreme_count = 0
+
+    for idx in range(len(returns_data_winsorized)):
+        row = returns_data_winsorized.iloc[idx].values
+        # 只对非零值进行winsorize（零值代表停牌或缺失）
+        non_zero_mask = row != 0
+        if non_zero_mask.sum() > 10:  # 至少有10个非零值才处理
+            original = row.copy()
+            row_winsorized = winsorize(row[non_zero_mask], limits=WINSORIZE_LIMITS)
+            row[non_zero_mask] = row_winsorized
+            extreme_count += (np.abs(original - row) > 1e-10).sum()
+            returns_data_winsorized.iloc[idx] = row
+
+    print(f"  处理极端值: {extreme_count:,} 个")
+    print()
+
+    # 更新DataFrame
+    df_returns[date_cols] = returns_data_winsorized
+
+    # 统计处理后的收益率
+    all_returns = returns_data_winsorized.values.flatten()
+    all_returns = all_returns[all_returns != 0]  # 排除零值（停牌日）
 
     print(f"收益率统计（日收益率）:")
     print(f"  均值: {all_returns.mean():.6f} ({all_returns.mean() * 100:.4f}%)")

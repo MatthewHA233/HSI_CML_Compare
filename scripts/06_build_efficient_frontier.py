@@ -41,7 +41,7 @@ OUTPUT_REPORT = BASE_DIR / "处理后数据" / "06_有效前沿" / r"frontier_�
 NUM_PORTFOLIOS = 50  # 有效前沿点数
 ALLOW_SHORT_SELLING = False  # 是否允许卖空
 USE_POSITIVE_RETURN_ONLY = False  # 使用全部股票（包括负收益）
-TOP_N_STOCKS = None  # 使用全部2092只股票
+TOP_N_STOCKS = 1400  # 接近交易日数量（1476天），确保样本充足性
 
 
 def portfolio_variance(weights, cov_matrix):
