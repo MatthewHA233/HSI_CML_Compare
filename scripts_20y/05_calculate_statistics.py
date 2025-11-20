@@ -10,13 +10,13 @@
 4. 验证协方差矩阵正定性
 
 输入：
-- 处理后数据/returns.csv
+- 处理后数据_20y/returns.csv
 
 输出：
-- 处理后数据/summary_stats.csv (描述性统计)
-- 处理后数据/covariance.csv (协方差矩阵)
-- 处理后数据/correlation.csv (相关系数矩阵)
-- 处理后数据/statistics_数据分析报告.txt
+- 处理后数据_20y/summary_stats.csv (描述性统计)
+- 处理后数据_20y/covariance.csv (协方差矩阵)
+- 处理后数据_20y/correlation.csv (相关系数矩阵)
+- 处理后数据_20y/statistics_数据分析报告.txt
 """
 
 import pandas as pd
@@ -29,11 +29,11 @@ warnings.filterwarnings('ignore')
 
 # 路径配置
 BASE_DIR = Path(__file__).parent.parent
-INPUT_RETURNS = BASE_DIR / "处理后数据" / "04_收益率" / r"returns.csv"
-OUTPUT_STATS = BASE_DIR / "处理后数据" / "05_统计特征" / r"summary_stats.csv"
-OUTPUT_COV = BASE_DIR / "处理后数据" / "05_统计特征" / r"covariance.csv"
-OUTPUT_CORR = BASE_DIR / "处理后数据" / "05_统计特征" / r"correlation.csv"
-OUTPUT_REPORT = BASE_DIR / "处理后数据" / "05_统计特征" / r"statistics_数据分析报告.txt"
+INPUT_RETURNS = BASE_DIR / "处理后数据_20y" / "04_收益率" / r"returns.csv"
+OUTPUT_STATS = BASE_DIR / "处理后数据_20y" / "05_统计特征" / r"summary_stats.csv"
+OUTPUT_COV = BASE_DIR / "处理后数据_20y" / "05_统计特征" / r"covariance.csv"
+OUTPUT_CORR = BASE_DIR / "处理后数据_20y" / "05_统计特征" / r"correlation.csv"
+OUTPUT_REPORT = BASE_DIR / "处理后数据_20y" / "05_统计特征" / r"statistics_数据分析报告.txt"
 
 # 参数配置
 TRADING_DAYS_PER_YEAR = 252

@@ -21,11 +21,11 @@ plt.rcParams['axes.unicode_minus'] = False
 
 # 路径配置
 BASE_DIR = Path(__file__).parent.parent
-INPUT_FRONTIER = BASE_DIR / "处理后数据" / "06_有效前沿" / r"efficient_frontier.csv"
-INPUT_GMV = BASE_DIR / "处理后数据" / "06_有效前沿" / r"gmv_portfolio.json"
-INPUT_MARKET = BASE_DIR / "处理后数据" / "07_资本市场线" / r"market_portfolio.json"
-INPUT_HSI = BASE_DIR / "处理后数据" / "08_恒指指标" / r"hsi_metrics.json"
-OUTPUT_PLOT = BASE_DIR / "处理后数据" / "10_可视化" / r"ef_cml_plot.png"
+INPUT_FRONTIER = BASE_DIR / "处理后数据_20y" / "06_有效前沿" / r"efficient_frontier.csv"
+INPUT_GMV = BASE_DIR / "处理后数据_20y" / "06_有效前沿" / r"gmv_portfolio.json"
+INPUT_MARKET = BASE_DIR / "处理后数据_20y" / "07_资本市场线" / r"market_portfolio.json"
+INPUT_HSI = BASE_DIR / "处理后数据_20y" / "08_恒指指标" / r"hsi_metrics.json"
+OUTPUT_PLOT = BASE_DIR / "处理后数据_20y" / "10_可视化" / r"ef_cml_plot.png"
 
 # 参数配置
 RISK_FREE_RATE = 0.025

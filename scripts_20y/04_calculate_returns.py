@@ -10,13 +10,13 @@
 4. 年化处理（可选）
 
 输入：
-- 处理后数据/cleaned_prices.csv
-- 处理后数据/hsi_prices.csv
+- 处理后数据_20y/cleaned_prices.csv
+- 处理后数据_20y/hsi_prices.csv
 
 输出：
-- 处理后数据/returns.csv (股票日收益率)
-- 处理后数据/hsi_returns.csv (HSI日收益率)
-- 处理后数据/returns_数据分析报告.txt
+- 处理后数据_20y/returns.csv (股票日收益率)
+- 处理后数据_20y/hsi_returns.csv (HSI日收益率)
+- 处理后数据_20y/returns_数据分析报告.txt
 """
 
 import pandas as pd
@@ -30,14 +30,14 @@ warnings.filterwarnings('ignore')
 
 # 路径配置
 BASE_DIR = Path(__file__).parent.parent
-INPUT_PRICES = BASE_DIR / "处理后数据" / "03_清洗过滤" / r"cleaned_prices.csv"
-INPUT_HSI = BASE_DIR / "处理后数据" / "02_恒指价格" / r"hsi_prices.csv"
-OUTPUT_RETURNS = BASE_DIR / "处理后数据" / "04_收益率" / r"returns.csv"
-OUTPUT_HSI_RETURNS = BASE_DIR / "处理后数据" / "04_收益率" / r"hsi_returns.csv"
-OUTPUT_REPORT = BASE_DIR / "处理后数据" / "04_收益率" / r"returns_数据分析报告.txt"
+INPUT_PRICES = BASE_DIR / "处理后数据_20y" / "03_清洗过滤" / r"cleaned_prices.csv"
+INPUT_HSI = BASE_DIR / "处理后数据_20y" / "02_恒指价格" / r"hsi_prices.csv"
+OUTPUT_RETURNS = BASE_DIR / "处理后数据_20y" / "04_收益率" / r"returns.csv"
+OUTPUT_HSI_RETURNS = BASE_DIR / "处理后数据_20y" / "04_收益率" / r"hsi_returns.csv"
+OUTPUT_REPORT = BASE_DIR / "处理后数据_20y" / "04_收益率" / r"returns_数据分析报告.txt"
 
 # 参数配置
-TRADING_DAYS_PER_YEAR = 252  # 年化交易日数
+MONTHS_PER_YEAR = 12  # 月度数据年化因子（原252改为12）
 WINSORIZE_LIMITS = (0.01, 0.01)  # Winsorize极端值处理（上下各1%）
 
 
@@ -170,8 +170,8 @@ def main():
     print()
 
     print(f"年化统计:")
-    print(f"  年化收益率: {all_returns.mean() * TRADING_DAYS_PER_YEAR:.6f} ({all_returns.mean() * TRADING_DAYS_PER_YEAR * 100:.2f}%)")
-    print(f"  年化波动率: {all_returns.std() * np.sqrt(TRADING_DAYS_PER_YEAR):.6f} ({all_returns.std() * np.sqrt(TRADING_DAYS_PER_YEAR) * 100:.2f}%)")
+    print(f"  年化收益率: {all_returns.mean() * MONTHS_PER_YEAR:.6f} ({all_returns.mean() * MONTHS_PER_YEAR * 100:.2f}%)")
+    print(f"  年化波动率: {all_returns.std() * np.sqrt(MONTHS_PER_YEAR):.6f} ({all_returns.std() * np.sqrt(MONTHS_PER_YEAR) * 100:.2f}%)")
     print()
 
     # 保存收益率
@@ -213,8 +213,8 @@ def main():
     print()
 
     print(f"HSI年化统计:")
-    print(f"  年化收益率: {hsi_returns.mean() * TRADING_DAYS_PER_YEAR:.6f} ({hsi_returns.mean() * TRADING_DAYS_PER_YEAR * 100:.2f}%)")
-    print(f"  年化波动率: {hsi_returns.std() * np.sqrt(TRADING_DAYS_PER_YEAR):.6f} ({hsi_returns.std() * np.sqrt(TRADING_DAYS_PER_YEAR) * 100:.2f}%)")
+    print(f"  年化收益率: {hsi_returns.mean() * MONTHS_PER_YEAR:.6f} ({hsi_returns.mean() * MONTHS_PER_YEAR * 100:.2f}%)")
+    print(f"  年化波动率: {hsi_returns.std() * np.sqrt(MONTHS_PER_YEAR):.6f} ({hsi_returns.std() * np.sqrt(MONTHS_PER_YEAR) * 100:.2f}%)")
     print()
 
     # 保存收益率
@@ -240,8 +240,8 @@ def main():
         f.write("  - 近似正态分布，适合统计分析\n\n")
 
         f.write("年化公式:\n")
-        f.write(f"  - 年化收益率 = 日均收益率 × {TRADING_DAYS_PER_YEAR}\n")
-        f.write(f"  - 年化波动率 = 日波动率 × √{TRADING_DAYS_PER_YEAR}\n\n")
+        f.write(f"  - 年化收益率 = 月均收益率 × {MONTHS_PER_YEAR}\n")
+        f.write(f"  - 年化波动率 = 月波动率 × √{MONTHS_PER_YEAR}\n\n")
 
         # 二、股票收益率统计
         f.write("二、股票收益率统计\n")
@@ -262,8 +262,8 @@ def main():
         f.write(f"  最大值:   {all_returns.max():>10.6f}  ({all_returns.max() * 100:>8.4f}%)\n\n")
 
         f.write("年化统计:\n")
-        f.write(f"  年化收益率: {all_returns.mean() * TRADING_DAYS_PER_YEAR:>10.6f}  ({all_returns.mean() * TRADING_DAYS_PER_YEAR * 100:>7.2f}%)\n")
-        f.write(f"  年化波动率: {all_returns.std() * np.sqrt(TRADING_DAYS_PER_YEAR):>10.6f}  ({all_returns.std() * np.sqrt(TRADING_DAYS_PER_YEAR) * 100:>7.2f}%)\n\n")
+        f.write(f"  年化收益率: {all_returns.mean() * MONTHS_PER_YEAR:>10.6f}  ({all_returns.mean() * MONTHS_PER_YEAR * 100:>7.2f}%)\n")
+        f.write(f"  年化波动率: {all_returns.std() * np.sqrt(MONTHS_PER_YEAR):>10.6f}  ({all_returns.std() * np.sqrt(MONTHS_PER_YEAR) * 100:>7.2f}%)\n\n")
 
         # 三、HSI收益率统计
         f.write("三、HSI收益率统计\n")
@@ -283,8 +283,8 @@ def main():
         f.write(f"  最大值:   {hsi_returns.max():>10.6f}  ({hsi_returns.max() * 100:>8.4f}%)\n\n")
 
         f.write("年化统计:\n")
-        f.write(f"  年化收益率: {hsi_returns.mean() * TRADING_DAYS_PER_YEAR:>10.6f}  ({hsi_returns.mean() * TRADING_DAYS_PER_YEAR * 100:>7.2f}%)\n")
-        f.write(f"  年化波动率: {hsi_returns.std() * np.sqrt(TRADING_DAYS_PER_YEAR):>10.6f}  ({hsi_returns.std() * np.sqrt(TRADING_DAYS_PER_YEAR) * 100:>7.2f}%)\n\n")
+        f.write(f"  年化收益率: {hsi_returns.mean() * MONTHS_PER_YEAR:>10.6f}  ({hsi_returns.mean() * MONTHS_PER_YEAR * 100:>7.2f}%)\n")
+        f.write(f"  年化波动率: {hsi_returns.std() * np.sqrt(MONTHS_PER_YEAR):>10.6f}  ({hsi_returns.std() * np.sqrt(MONTHS_PER_YEAR) * 100:>7.2f}%)\n\n")
 
         # 四、数据质量
         f.write("四、数据质量\n")

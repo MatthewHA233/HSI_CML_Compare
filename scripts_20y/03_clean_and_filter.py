@@ -12,11 +12,11 @@
 6. **原则**：所有数据处理都在收益率层面进行（步骤4）
 
 输入：
-- 处理后数据/01_原始价格/raw_prices.csv
+- 处理后数据_20y/01_原始价格/raw_prices.csv
 
 输出：
-- 处理后数据/03_清洗过滤/cleaned_prices.csv
-- 处理后数据/03_清洗过滤/cleaned_数据分析报告.txt
+- 处理后数据_20y/03_清洗过滤/cleaned_prices.csv
+- 处理后数据_20y/03_清洗过滤/cleaned_数据分析报告.txt
 
 说明：
 - 期末价格<0.05元的股票通常是退市或准退市股票
@@ -34,9 +34,9 @@ warnings.filterwarnings('ignore')
 
 # 路径配置
 BASE_DIR = Path(__file__).parent.parent
-INPUT_CSV = BASE_DIR / "处理后数据" / "01_原始价格" / r"raw_prices.csv"
-OUTPUT_CSV = BASE_DIR / "处理后数据" / "03_清洗过滤" / r"cleaned_prices.csv"
-OUTPUT_REPORT = BASE_DIR / "处理后数据" / "03_清洗过滤" / r"cleaned_数据分析报告.txt"
+INPUT_CSV = BASE_DIR / "处理后数据_20y" / "01_原始价格" / r"raw_prices.csv"
+OUTPUT_CSV = BASE_DIR / "处理后数据_20y" / "03_清洗过滤" / r"cleaned_prices.csv"
+OUTPUT_REPORT = BASE_DIR / "处理后数据_20y" / "03_清洗过滤" / r"cleaned_数据分析报告.txt"
 
 # 参数配置
 MISSING_THRESHOLD = 0.20  # 缺失率阈值（20%）

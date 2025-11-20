@@ -10,12 +10,12 @@
 4. 计算HSI在风险-收益坐标系中的位置
 
 输入：
-- 处理后数据/hsi_returns.csv
-- 处理后数据/hsi_prices.csv
+- 处理后数据_20y/hsi_returns.csv
+- 处理后数据_20y/hsi_prices.csv
 
 输出：
-- 处理后数据/hsi_metrics.json
-- 处理后数据/hsi_metrics_数据分析报告.txt
+- 处理后数据_20y/hsi_metrics.json
+- 处理后数据_20y/hsi_metrics_数据分析报告.txt
 """
 
 import pandas as pd
@@ -29,10 +29,10 @@ warnings.filterwarnings('ignore')
 
 # 路径配置
 BASE_DIR = Path(__file__).parent.parent
-INPUT_RETURNS = BASE_DIR / "处理后数据" / "02_恒指价格" / r"hsi_returns.csv"
-INPUT_PRICES = BASE_DIR / "处理后数据" / "02_恒指价格" / r"hsi_prices.csv"
-OUTPUT_METRICS = BASE_DIR / "处理后数据" / "08_恒指指标" / r"hsi_metrics.json"
-OUTPUT_REPORT = BASE_DIR / "处理后数据" / "08_恒指指标" / r"hsi_metrics_数据分析报告.txt"
+INPUT_RETURNS = BASE_DIR / "处理后数据_20y" / "02_恒指价格" / r"hsi_returns.csv"
+INPUT_PRICES = BASE_DIR / "处理后数据_20y" / "02_恒指价格" / r"hsi_prices.csv"
+OUTPUT_METRICS = BASE_DIR / "处理后数据_20y" / "08_恒指指标" / r"hsi_metrics.json"
+OUTPUT_REPORT = BASE_DIR / "处理后数据_20y" / "08_恒指指标" / r"hsi_metrics_数据分析报告.txt"
 
 # 参数配置
 TRADING_DAYS_PER_YEAR = 252

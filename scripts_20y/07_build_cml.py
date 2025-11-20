@@ -9,13 +9,13 @@
 3. 计算市场组合M的详细信息
 
 输入：
-- 处理后数据/efficient_frontier.csv
-- 处理后数据/summary_stats.csv
-- 处理后数据/covariance.csv
+- 处理后数据_20y/efficient_frontier.csv
+- 处理后数据_20y/summary_stats.csv
+- 处理后数据_20y/covariance.csv
 
 输出：
-- 处理后数据/market_portfolio.json
-- 处理后数据/cml_数据分析报告.txt
+- 处理后数据_20y/market_portfolio.json
+- 处理后数据_20y/cml_数据分析报告.txt
 """
 
 import pandas as pd
@@ -30,11 +30,11 @@ warnings.filterwarnings('ignore')
 
 # 路径配置
 BASE_DIR = Path(__file__).parent.parent
-INPUT_FRONTIER = BASE_DIR / "处理后数据" / "06_有效前沿" / r"efficient_frontier.csv"
-INPUT_STATS = BASE_DIR / "处理后数据" / "05_统计特征" / r"summary_stats.csv"
-INPUT_COV = BASE_DIR / "处理后数据" / "05_统计特征" / r"covariance.csv"
-OUTPUT_MARKET = BASE_DIR / "处理后数据" / "07_资本市场线" / r"market_portfolio.json"
-OUTPUT_REPORT = BASE_DIR / "处理后数据" / "07_资本市场线" / r"cml_数据分析报告.txt"
+INPUT_FRONTIER = BASE_DIR / "处理后数据_20y" / "06_有效前沿" / r"efficient_frontier.csv"
+INPUT_STATS = BASE_DIR / "处理后数据_20y" / "05_统计特征" / r"summary_stats.csv"
+INPUT_COV = BASE_DIR / "处理后数据_20y" / "05_统计特征" / r"covariance.csv"
+OUTPUT_MARKET = BASE_DIR / "处理后数据_20y" / "07_资本市场线" / r"market_portfolio.json"
+OUTPUT_REPORT = BASE_DIR / "处理后数据_20y" / "07_资本市场线" / r"cml_数据分析报告.txt"
 
 # 参数配置
 RISK_FREE_RATE = 0.025  # 无风险利率2.5%

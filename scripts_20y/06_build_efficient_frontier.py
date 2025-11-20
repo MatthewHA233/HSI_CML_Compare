@@ -10,13 +10,13 @@
 4. 计算最小方差组合(GMV)
 
 输入：
-- 处理后数据/summary_stats.csv
-- 处理后数据/covariance.csv
+- 处理后数据_20y/summary_stats.csv
+- 处理后数据_20y/covariance.csv
 
 输出：
-- 处理后数据/efficient_frontier.csv
-- 处理后数据/gmv_portfolio.json (全局最小方差组合)
-- 处理后数据/frontier_数据分析报告.txt
+- 处理后数据_20y/efficient_frontier.csv
+- 处理后数据_20y/gmv_portfolio.json (全局最小方差组合)
+- 处理后数据_20y/frontier_数据分析报告.txt
 """
 
 import pandas as pd
@@ -31,11 +31,11 @@ warnings.filterwarnings('ignore')
 
 # 路径配置
 BASE_DIR = Path(__file__).parent.parent
-INPUT_STATS = BASE_DIR / "处理后数据" / "05_统计特征" / r"summary_stats.csv"
-INPUT_COV = BASE_DIR / "处理后数据" / "05_统计特征" / r"covariance.csv"
-OUTPUT_FRONTIER = BASE_DIR / "处理后数据" / "06_有效前沿" / r"efficient_frontier.csv"
-OUTPUT_GMV = BASE_DIR / "处理后数据" / "06_有效前沿" / r"gmv_portfolio.json"
-OUTPUT_REPORT = BASE_DIR / "处理后数据" / "06_有效前沿" / r"frontier_数据分析报告.txt"
+INPUT_STATS = BASE_DIR / "处理后数据_20y" / "05_统计特征" / r"summary_stats.csv"
+INPUT_COV = BASE_DIR / "处理后数据_20y" / "05_统计特征" / r"covariance.csv"
+OUTPUT_FRONTIER = BASE_DIR / "处理后数据_20y" / "06_有效前沿" / r"efficient_frontier.csv"
+OUTPUT_GMV = BASE_DIR / "处理后数据_20y" / "06_有效前沿" / r"gmv_portfolio.json"
+OUTPUT_REPORT = BASE_DIR / "处理后数据_20y" / "06_有效前沿" / r"frontier_数据分析报告.txt"
 
 # 参数配置
 NUM_PORTFOLIOS = 50  # 有效前沿点数
