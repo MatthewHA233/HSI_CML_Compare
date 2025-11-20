@@ -5,36 +5,35 @@
 
 功能：
 1. 筛选流动性好的股票（删除缺失率>20%的股票）
-2. 处理剩余缺失值（前向填充）
-3. 去除极端异常值（winsorize处理）
-4. 确保所有股票日期对齐
+2. 检查剩余缺失值（不填充，保留NaN）
+3. 确保所有股票日期对齐
+4. **重要**：不对价格进行填充或Winsorize处理
+5. **原则**：所有数据处理都在收益率层面进行（步骤4）
 
 输入：
-- 处理后数据/raw_prices.csv
+- 处理后数据/01_原始价格/raw_prices.csv
 
 输出：
-- 处理后数据/cleaned_prices.csv
-- 处理后数据/cleaned_数据分析报告.txt
+- 处理后数据/03_清洗过滤/cleaned_prices.csv
+- 处理后数据/03_清洗过滤/cleaned_数据分析报告.txt
 """
 
 import pandas as pd
 import numpy as np
 from pathlib import Path
 from datetime import datetime
-from scipy.stats.mstats import winsorize
 import warnings
 
 warnings.filterwarnings('ignore')
 
 # 路径配置
 BASE_DIR = Path(__file__).parent.parent
-INPUT_CSV = BASE_DIR / "处理后数据" / "03_清洗过滤" / r"raw_prices.csv"
+INPUT_CSV = BASE_DIR / "处理后数据" / "01_原始价格" / r"raw_prices.csv"
 OUTPUT_CSV = BASE_DIR / "处理后数据" / "03_清洗过滤" / r"cleaned_prices.csv"
 OUTPUT_REPORT = BASE_DIR / "处理后数据" / "03_清洗过滤" / r"cleaned_数据分析报告.txt"
 
 # 参数配置
 MISSING_THRESHOLD = 0.20  # 缺失率阈值（20%）
-WINSORIZE_LIMITS = (0.01, 0.01)  # winsorize上下各1%
 
 
 def main():
@@ -111,8 +110,8 @@ def main():
     print("【6. 描述性统计】")
 
     # 价格统计
-    all_prices = price_data_winsorized.values.flatten()
-    all_prices = all_prices[all_prices > 0]  # 只统计非零价格
+    all_prices = price_data_filtered.values.flatten()
+    all_prices = all_prices[~np.isnan(all_prices) & (all_prices > 0)]  # 只统计非NaN且非零价格
 
     print(f"价格统计:")
     print(f"  最小值: {all_prices.min():.2f}")
@@ -123,8 +122,8 @@ def main():
     print()
 
     # 计算每只股票的平均价格和波动率（作为流动性参考）
-    stock_mean_price = price_data_winsorized.mean(axis=1)
-    stock_std_price = price_data_winsorized.std(axis=1)
+    stock_mean_price = price_data_filtered.mean(axis=1)
+    stock_std_price = price_data_filtered.std(axis=1)
     stock_cv = stock_std_price / stock_mean_price  # 变异系数
 
     print(f"股票特征统计:")
@@ -155,7 +154,7 @@ def main():
         f.write("二、筛选条件\n")
         f.write("-" * 70 + "\n")
         f.write(f"缺失率阈值: < {MISSING_THRESHOLD * 100:.0f}%\n")
-        f.write(f"极端值处理: Winsorize (上下各 {WINSORIZE_LIMITS[0] * 100:.0f}%)\n\n")
+        f.write(f"数据处理原则: 价格不填充、不Winsorize，所有处理在收益率层面\n\n")
 
         # 三、缺失率分布
         f.write("三、原始数据缺失率分布\n")
@@ -181,9 +180,10 @@ def main():
         # 五、数据清洗
         f.write("五、数据清洗处理\n")
         f.write("-" * 70 + "\n")
-        f.write(f"缺失值填充: {before_fill - after_fill:,} 个 (前向填充+后向填充)\n")
-        f.write(f"极端值处理: {extreme_count:,} 个 (Winsorize方法)\n")
-        f.write(f"最终数据完整度: 100.00%\n\n")
+        f.write(f"剩余缺失值: {missing_count:,} 个\n")
+        f.write(f"处理方法: 价格保留NaN，不填充，不Winsorize\n")
+        f.write(f"说明: 缺失值将在步骤4计算收益率时处理（令收益率=0）\n")
+        f.write(f"说明: 所有数据处理都在收益率层面进行\n\n")
 
         # 六、清洗后数据统计
         f.write("六、清洗后数据统计\n")

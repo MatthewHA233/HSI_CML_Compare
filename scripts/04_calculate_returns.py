@@ -31,7 +31,7 @@ warnings.filterwarnings('ignore')
 # 路径配置
 BASE_DIR = Path(__file__).parent.parent
 INPUT_PRICES = BASE_DIR / "处理后数据" / "03_清洗过滤" / r"cleaned_prices.csv"
-INPUT_HSI = BASE_DIR / "处理后数据" / "04_收益率" / r"hsi_prices.csv"
+INPUT_HSI = BASE_DIR / "处理后数据" / "02_恒指价格" / r"hsi_prices.csv"
 OUTPUT_RETURNS = BASE_DIR / "处理后数据" / "04_收益率" / r"returns.csv"
 OUTPUT_HSI_RETURNS = BASE_DIR / "处理后数据" / "04_收益率" / r"hsi_returns.csv"
 OUTPUT_REPORT = BASE_DIR / "处理后数据" / "04_收益率" / r"returns_数据分析报告.txt"
