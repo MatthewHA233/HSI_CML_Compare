@@ -130,6 +130,9 @@ def main():
         price_data_filtered.reset_index(drop=True)
     ], axis=1)
 
+    # 创建输出目录
+    OUTPUT_CSV.parent.mkdir(parents=True, exist_ok=True)
+
     # 保存
     df_cleaned.to_csv(OUTPUT_CSV, index=False, encoding='utf-8-sig')
 
