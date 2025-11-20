@@ -35,7 +35,7 @@ OUTPUT_METRICS = BASE_DIR / "处理后数据_20y" / "08_恒指指标" / r"hsi_me
 OUTPUT_REPORT = BASE_DIR / "处理后数据_20y" / "08_恒指指标" / r"hsi_metrics_数据分析报告.txt"
 
 # 参数配置
-TRADING_DAYS_PER_YEAR = 252
+MONTHS_PER_YEAR = 12  # 月度数据年化因子
 RISK_FREE_RATE = 0.025  # 假设无风险利率为2.5%（HKMA 3个月国债收益率）
 
 
@@ -74,7 +74,7 @@ def main():
     mean_daily_return = hsi_returns.mean()
 
     # 年化收益率
-    annualized_return = mean_daily_return * TRADING_DAYS_PER_YEAR
+    annualized_return = mean_daily_return * MONTHS_PER_YEAR
 
     print(f"  日均收益率: {mean_daily_return:.6f} ({mean_daily_return * 100:.4f}%)")
     print(f"  年化收益率: {annualized_return:.6f} ({annualized_return * 100:.2f}%)")
@@ -87,7 +87,7 @@ def main():
     daily_std = hsi_returns.std()
 
     # 年化波动率
-    annualized_std = daily_std * np.sqrt(TRADING_DAYS_PER_YEAR)
+    annualized_std = daily_std * np.sqrt(MONTHS_PER_YEAR)
 
     print(f"  日波动率: {daily_std:.6f} ({daily_std * 100:.4f}%)")
     print(f"  年化波动率: {annualized_std:.6f} ({annualized_std * 100:.2f}%)")
@@ -111,7 +111,7 @@ def main():
     total_return = (end_price - start_price) / start_price
 
     # 年化复合收益率（CAGR）
-    n_years = len(df_prices) / TRADING_DAYS_PER_YEAR
+    n_years = len(df_prices) / MONTHS_PER_YEAR
     cagr = (end_price / start_price) ** (1 / n_years) - 1
 
     print(f"  期初价格: {start_price:,.2f}")
@@ -133,14 +133,14 @@ def main():
     # 下行波动率（只考虑负收益）
     negative_returns = hsi_returns[hsi_returns < 0]
     downside_std_daily = negative_returns.std() if len(negative_returns) > 0 else 0
-    downside_std_annual = downside_std_daily * np.sqrt(TRADING_DAYS_PER_YEAR)
+    downside_std_annual = downside_std_daily * np.sqrt(MONTHS_PER_YEAR)
 
     # Sortino比率（使用下行波动率）
     sortino_ratio = (annualized_return - RISK_FREE_RATE) / downside_std_annual if downside_std_annual > 0 else 0
 
     # VaR (95%置信度)
     var_95 = np.percentile(hsi_returns, 5)
-    var_95_annual = var_95 * np.sqrt(TRADING_DAYS_PER_YEAR)
+    var_95_annual = var_95 * np.sqrt(MONTHS_PER_YEAR)
 
     print(f"  最大回撤: {max_drawdown:.4f} ({max_drawdown * 100:.2f}%)")
     print(f"  下行波动率(年化): {downside_std_annual:.4f} ({downside_std_annual * 100:.2f}%)")

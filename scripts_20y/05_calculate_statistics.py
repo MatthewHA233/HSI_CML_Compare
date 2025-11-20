@@ -36,7 +36,7 @@ OUTPUT_CORR = BASE_DIR / "处理后数据_20y" / "05_统计特征" / r"correlati
 OUTPUT_REPORT = BASE_DIR / "处理后数据_20y" / "05_统计特征" / r"statistics_数据分析报告.txt"
 
 # 参数配置
-TRADING_DAYS_PER_YEAR = 252
+MONTHS_PER_YEAR = 12  # 月度数据年化因子
 
 
 def check_positive_definite(matrix, name="Matrix"):
@@ -65,7 +65,7 @@ def check_positive_definite(matrix, name="Matrix"):
 
 def main():
     # 创建输出目录
-    OUTPUT_SUMMARY.parent.mkdir(parents=True, exist_ok=True)
+    OUTPUT_STATS.parent.mkdir(parents=True, exist_ok=True)
 
     print("=" * 60)
     print("计算统计特征")
@@ -100,7 +100,7 @@ def main():
     mean_returns_daily = returns_data.mean(axis=0)
 
     # 年化期望收益率
-    mean_returns_annual = mean_returns_daily * TRADING_DAYS_PER_YEAR
+    mean_returns_annual = mean_returns_daily * MONTHS_PER_YEAR
 
     print(f"期望收益率统计（年化）:")
     print(f"  最小值: {mean_returns_annual.min():.6f} ({mean_returns_annual.min() * 100:.2f}%)")
@@ -117,7 +117,7 @@ def main():
     cov_matrix_daily = returns_data.cov()
 
     # 年化协方差矩阵
-    cov_matrix_annual = cov_matrix_daily * TRADING_DAYS_PER_YEAR
+    cov_matrix_annual = cov_matrix_daily * MONTHS_PER_YEAR
 
     print(f"协方差矩阵维度: {cov_matrix_annual.shape[0]} × {cov_matrix_annual.shape[1]}")
     print(f"协方差统计（年化）:")
@@ -181,7 +181,7 @@ def main():
     std_daily = returns_data.std(axis=0)
 
     # 年化波动率
-    std_annual = std_daily * np.sqrt(TRADING_DAYS_PER_YEAR)
+    std_annual = std_daily * np.sqrt(MONTHS_PER_YEAR)
 
     print(f"波动率统计（年化）:")
     print(f"  最小值: {std_annual.min():.6f} ({std_annual.min() * 100:.2f}%)")
