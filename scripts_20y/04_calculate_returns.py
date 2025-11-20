@@ -108,7 +108,7 @@ def main():
     print(f"输入文件: {INPUT_PRICES}")
 
     df_prices = pd.read_csv(INPUT_PRICES)
-    info_cols = ['Symbol', 'InstitutionID', 'SecurityID']
+    info_cols = ['Symbol', 'SecurityID']  # 20年数据没有InstitutionID
 
     print(f"  股票数: {len(df_prices):,} 只")
     print(f"  价格列数: {len(df_prices.columns) - len(info_cols):,} 天")

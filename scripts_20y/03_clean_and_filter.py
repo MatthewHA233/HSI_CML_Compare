@@ -54,7 +54,7 @@ def main():
     df = pd.read_csv(INPUT_CSV)
 
     # 分离info列和price列
-    info_cols = ['Symbol', 'InstitutionID', 'SecurityID']
+    info_cols = ['Symbol', 'SecurityID']  # 20年数据没有InstitutionID
     date_cols = [col for col in df.columns if col not in info_cols]
 
     print(f"  股票数: {len(df):,} 只")

@@ -74,7 +74,7 @@ def main():
     print(f"输入文件: {INPUT_RETURNS}")
 
     df_returns = pd.read_csv(INPUT_RETURNS)
-    info_cols = ['Symbol', 'InstitutionID', 'SecurityID']
+    info_cols = ['Symbol', 'SecurityID']  # 20年数据没有InstitutionID
     date_cols = [col for col in df_returns.columns if col not in info_cols]
 
     print(f"  股票数: {len(df_returns):,} 只")
