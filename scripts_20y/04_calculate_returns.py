@@ -193,7 +193,7 @@ def main():
 
     # 计算对数收益率
     print("计算对数收益率...")
-    hsi_prices = df_hsi['HSI_Close'].values
+    hsi_prices = df_hsi['ClosePrice'].values  # 列名是ClosePrice
     hsi_returns = np.log(hsi_prices[1:] / hsi_prices[:-1])
 
     # 创建收益率DataFrame

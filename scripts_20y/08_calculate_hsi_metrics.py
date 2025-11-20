@@ -106,8 +106,8 @@ def main():
     # 5. 计算累计收益
     print("【5. 计算累计收益】")
 
-    start_price = df_prices['HSI_Close'].iloc[0]
-    end_price = df_prices['HSI_Close'].iloc[-1]
+    start_price = df_prices['ClosePrice'].iloc[0]
+    end_price = df_prices['ClosePrice'].iloc[-1]
     total_return = (end_price - start_price) / start_price
 
     # 年化复合收益率（CAGR）
@@ -125,7 +125,7 @@ def main():
     print("【6. 计算其他风险指标】")
 
     # 最大回撤
-    prices = df_prices['HSI_Close'].values
+    prices = df_prices['ClosePrice'].values
     cummax = np.maximum.accumulate(prices)
     drawdown = (prices - cummax) / cummax
     max_drawdown = drawdown.min()
