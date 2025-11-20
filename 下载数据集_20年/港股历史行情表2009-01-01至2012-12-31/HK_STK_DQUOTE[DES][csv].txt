@@ -1,0 +1,5 @@
+TradingDate [交易日期] - 
+Symbol [股票代码] - 
+SecurityID [证券ID] - 
+ClosePrice [收盘价] - 
+Volume [成交量] - 

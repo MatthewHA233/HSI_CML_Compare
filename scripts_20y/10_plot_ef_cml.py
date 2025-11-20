@@ -34,21 +34,10 @@ DPI = 300
 
 
 def main():
-    print("=" * 60)
     # 创建输出目录
-    BASE_DIR = Path(__file__).parent.parent
-    output_dirs = [
-        BASE_DIR / "处理后数据_20y" / "04_收益率",
-        BASE_DIR / "处理后数据_20y" / "05_统计特征",
-        BASE_DIR / "处理后数据_20y" / "06_有效前沿",
-        BASE_DIR / "处理后数据_20y" / "07_资本市场线",
-        BASE_DIR / "处理后数据_20y" / "08_HSI指标",
-        BASE_DIR / "处理后数据_20y" / "09_绩效对比",
-        BASE_DIR / "处理后数据_20y" / "10_可视化",
-    ]
-    for d in output_dirs:
-        d.mkdir(parents=True, exist_ok=True)
+    OUTPUT_PLOT.parent.mkdir(parents=True, exist_ok=True)
 
+    print("=" * 60)
     print("绘制有效前沿、CML、HSI对比图")
     print("=" * 60)
     print()
