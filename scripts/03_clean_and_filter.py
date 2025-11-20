@@ -5,10 +5,11 @@
 
 功能：
 1. 筛选流动性好的股票（删除缺失率>20%的股票）
-2. 检查剩余缺失值（不填充，保留NaN）
-3. 确保所有股票日期对齐
-4. **重要**：不对价格进行填充或Winsorize处理
-5. **原则**：所有数据处理都在收益率层面进行（步骤4）
+2. 筛选价格质量（删除期末价格<0.05元的退市股/仙股）
+3. 检查剩余缺失值（不填充，保留NaN）
+4. 确保所有股票日期对齐
+5. **重要**：不对价格进行填充或Winsorize处理
+6. **原则**：所有数据处理都在收益率层面进行（步骤4）
 
 输入：
 - 处理后数据/01_原始价格/raw_prices.csv
@@ -16,6 +17,11 @@
 输出：
 - 处理后数据/03_清洗过滤/cleaned_prices.csv
 - 处理后数据/03_清洗过滤/cleaned_数据分析报告.txt
+
+说明：
+- 期末价格<0.05元的股票通常是退市或准退市股票
+- 这些股票年化收益率往往<-50%，会严重扭曲优化结果
+- 在步骤3筛选避免后续计算浪费
 """
 
 import pandas as pd
@@ -79,17 +85,44 @@ def main():
     print(f"  剔除股票: {(~good_stocks).sum():,} 只")
     print()
 
-    # 3. 检查剩余缺失值（不填充，只统计）
-    print("【3. 检查剩余缺失值】")
+    # 3. 筛选价格质量（删除极端低价和退市股）
+    print("【3. 筛选价格质量】")
     price_data_filtered = df_filtered[date_cols]
 
+    # 计算期末价格（最后一个有效价格）
+    final_prices = price_data_filtered.apply(lambda row: row.dropna().iloc[-1] if len(row.dropna()) > 0 else 0, axis=1)
+
+    # 计算价格波动率（标准差/均值）
+    price_mean = price_data_filtered.mean(axis=1, skipna=True)
+    price_std = price_data_filtered.std(axis=1, skipna=True)
+    price_cv = price_std / price_mean  # 变异系数
+
+    print(f"  期末价格统计:")
+    print(f"    <0.1元: {(final_prices < 0.1).sum()} 只")
+    print(f"    <0.5元: {(final_prices < 0.5).sum()} 只")
+    print(f"    <1元:   {(final_prices < 1.0).sum()} 只")
+
+    # 筛选条件：期末价格≥0.05元（删除极低价/退市股）
+    MIN_FINAL_PRICE = 0.05
+    good_price = final_prices >= MIN_FINAL_PRICE
+
+    df_filtered = df_filtered[good_price].copy()
+    price_data_filtered = price_data_filtered[good_price].copy()
+
+    print(f"\n  筛选条件: 期末价格 ≥ {MIN_FINAL_PRICE}元")
+    print(f"  保留股票: {good_price.sum():,} 只")
+    print(f"  剔除股票: {(~good_price).sum():,} 只 (疑似退市/仙股)")
+    print()
+
+    # 4. 检查剩余缺失值（不填充，只统计）
+    print("【4. 检查剩余缺失值】")
     missing_count = price_data_filtered.isnull().sum().sum()
     print(f"  剩余缺失值: {missing_count:,} 个")
     print(f"  说明: 缺失值将在计算收益率时处理（令收益率=0）")
     print()
 
-    # 4. 生成清洗后数据（保留价格的NaN和0）
-    print("【4. 生成清洗后数据】")
+    # 5. 生成清洗后数据（保留价格的NaN和0）
+    print("【5. 生成清洗后数据】")
     print(f"  说明: 价格数据不做填充和Winsorize处理")
     print(f"  说明: 所有数据处理将在收益率层面进行")
     df_cleaned = pd.concat([
@@ -153,8 +186,9 @@ def main():
         # 二、筛选条件
         f.write("二、筛选条件\n")
         f.write("-" * 70 + "\n")
-        f.write(f"缺失率阈值: < {MISSING_THRESHOLD * 100:.0f}%\n")
-        f.write(f"数据处理原则: 价格不填充、不Winsorize，所有处理在收益率层面\n\n")
+        f.write(f"1. 缺失率阈值: < {MISSING_THRESHOLD * 100:.0f}%\n")
+        f.write(f"2. 期末价格阈值: ≥ {MIN_FINAL_PRICE}元 (删除退市/仙股)\n")
+        f.write(f"3. 数据处理原则: 价格不填充、不Winsorize，所有处理在收益率层面\n\n")
 
         # 三、缺失率分布
         f.write("三、原始数据缺失率分布\n")
@@ -174,8 +208,15 @@ def main():
         # 四、筛选结果
         f.write("四、筛选结果\n")
         f.write("-" * 70 + "\n")
-        f.write(f"保留股票: {len(df_cleaned):,} 只 ({len(df_cleaned) / len(df) * 100:.1f}%)\n")
-        f.write(f"剔除股票: {len(df) - len(df_cleaned):,} 只 ({(len(df) - len(df_cleaned)) / len(df) * 100:.1f}%)\n\n")
+        f.write(f"筛选1 - 缺失率筛选:\n")
+        f.write(f"  保留: {good_stocks.sum():,} 只\n")
+        f.write(f"  剔除: {(~good_stocks).sum():,} 只\n\n")
+        f.write(f"筛选2 - 价格质量筛选:\n")
+        f.write(f"  保留: {good_price.sum():,} 只\n")
+        f.write(f"  剔除: {(~good_price).sum():,} 只 (期末价格<{MIN_FINAL_PRICE}元)\n\n")
+        f.write(f"最终结果:\n")
+        f.write(f"  保留股票: {len(df_cleaned):,} 只 ({len(df_cleaned) / len(df) * 100:.1f}%)\n")
+        f.write(f"  剔除股票: {len(df) - len(df_cleaned):,} 只 ({(len(df) - len(df_cleaned)) / len(df) * 100:.1f}%)\n\n")
 
         # 五、数据清洗
         f.write("五、数据清洗处理\n")
