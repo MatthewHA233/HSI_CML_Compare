@@ -41,7 +41,7 @@ RISK_FREE_RATE = 0.025  # 假设无风险利率为2.5%（HKMA 3个月国债收�
 
 def main():
     # 创建输出目录
-    OUTPUT_JSON.parent.mkdir(parents=True, exist_ok=True)
+    OUTPUT_METRICS.parent.mkdir(parents=True, exist_ok=True)
 
     print("=" * 60)
     print("计算HSI指标")

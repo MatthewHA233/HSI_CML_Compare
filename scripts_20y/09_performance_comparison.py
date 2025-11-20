@@ -58,7 +58,7 @@ def find_minimum_distance_to_frontier(hsi_return, hsi_std, frontier_df):
 
 def main():
     # 创建输出目录
-    OUTPUT_CSV.parent.mkdir(parents=True, exist_ok=True)
+    OUTPUT_COMPARISON.parent.mkdir(parents=True, exist_ok=True)
 
     print("=" * 60)
     print("比较分析与绩效评估")

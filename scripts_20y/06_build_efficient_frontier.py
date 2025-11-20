@@ -129,7 +129,7 @@ def find_global_minimum_variance(mean_returns, cov_matrix, allow_short=False):
 
 def main():
     # 创建输出目录
-    OUTPUT_CSV.parent.mkdir(parents=True, exist_ok=True)
+    OUTPUT_FRONTIER.parent.mkdir(parents=True, exist_ok=True)
 
     print("=" * 60)
     print("构建有效前沿")

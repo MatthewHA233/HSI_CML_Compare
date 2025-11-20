@@ -44,7 +44,7 @@ TOP_N_STOCKS = None  # 使用全部2092只股票
 
 def main():
     # 创建输出目录
-    OUTPUT_JSON.parent.mkdir(parents=True, exist_ok=True)
+    OUTPUT_MARKET.parent.mkdir(parents=True, exist_ok=True)
 
     print("=" * 60)
     print("构建资本市场线(CML)")
