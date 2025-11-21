@@ -39,7 +39,7 @@ OUTPUT_CSV = BASE_DIR / "处理后数据_20y" / "03_清洗过滤" / r"cleaned_pr
 OUTPUT_REPORT = BASE_DIR / "处理后数据_20y" / "03_清洗过滤" / r"cleaned_数据分析报告.txt"
 
 # 参数配置
-MISSING_THRESHOLD = 0.20  # 缺失率阈值（20%）
+MISSING_THRESHOLD = 0.30  # 缺失率阈值（30%）
 
 
 def main():
@@ -102,8 +102,8 @@ def main():
     print(f"    <0.5元: {(final_prices < 0.5).sum()} 只")
     print(f"    <1元:   {(final_prices < 1.0).sum()} 只")
 
-    # 筛选条件：期末价格≥0.05元（删除极低价/退市股）
-    MIN_FINAL_PRICE = 0.05
+    # 筛选条件：期末价格≥1.0元（删除仙股）
+    MIN_FINAL_PRICE = 1.0
     good_price = final_prices >= MIN_FINAL_PRICE
 
     df_filtered = df_filtered[good_price].copy()
@@ -269,7 +269,7 @@ def main():
         # 九、说明
         f.write("九、说明\n")
         f.write("-" * 70 + "\n")
-        f.write("1. 筛选标准: 保留缺失率<20%且期末价格≥0.05元的股票\n")
+        f.write(f"1. 筛选标准: 保留缺失率<{MISSING_THRESHOLD*100:.0f}%且期末价格≥{MIN_FINAL_PRICE}元的股票\n")
         f.write("2. 缺失值处理: 保留NaN不填充，在步骤4计算收益率时处理\n")
         f.write("3. 价格处理原则: 不填充、不Winsorize，所有处理在收益率层面\n")
         f.write("4. 数据用途: 本数据将用于计算收益率、协方差矩阵和构建有效前沿\n")

@@ -42,6 +42,7 @@ NUM_PORTFOLIOS = 50  # 有效前沿点数
 ALLOW_SHORT_SELLING = False  # 是否允许卖空
 USE_POSITIVE_RETURN_ONLY = False  # 使用全部股票（包括负收益）
 TOP_N_STOCKS = None  # 使用全部2092只股票
+MAX_WEIGHT = 0.10  # 单只股票最大权重限制（10%）
 
 
 def portfolio_variance(weights, cov_matrix):
@@ -80,9 +81,9 @@ def minimize_variance_for_target_return(target_return, mean_returns, cov_matrix,
 
     # 边界条件
     if allow_short:
-        bounds = tuple((-1, 1) for _ in range(n_assets))  # 允许卖空，但限制范围
+        bounds = tuple((-MAX_WEIGHT, MAX_WEIGHT) for _ in range(n_assets))  # 允许卖空，但限制范围
     else:
-        bounds = tuple((0, 1) for _ in range(n_assets))  # 不允许卖空
+        bounds = tuple((0, MAX_WEIGHT) for _ in range(n_assets))  # 不允许卖空，单只股票最大10%
 
     # 优化
     result = minimize(
@@ -111,9 +112,9 @@ def find_global_minimum_variance(mean_returns, cov_matrix, allow_short=False):
     ]
 
     if allow_short:
-        bounds = tuple((-1, 1) for _ in range(n_assets))
+        bounds = tuple((-MAX_WEIGHT, MAX_WEIGHT) for _ in range(n_assets))
     else:
-        bounds = tuple((0, 1) for _ in range(n_assets))
+        bounds = tuple((0, MAX_WEIGHT) for _ in range(n_assets))  # 单只股票最大10%
 
     result = minimize(
         lambda w: portfolio_variance(w, cov_matrix),

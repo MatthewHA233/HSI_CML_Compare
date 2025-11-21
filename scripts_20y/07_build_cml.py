@@ -40,6 +40,7 @@ OUTPUT_REPORT = BASE_DIR / "处理后数据_20y" / "07_资本市场线" / r"cml_
 RISK_FREE_RATE = 0.025  # 无风险利率2.5%
 USE_POSITIVE_RETURN_ONLY = False  # 使用全部股票（与步骤6保持一致）
 TOP_N_STOCKS = None  # 使用全部2092只股票
+MAX_WEIGHT = 0.10  # 单只股票最大权重限制（10%）
 
 
 def main():
@@ -137,7 +138,7 @@ def main():
     ]
 
     # 边界条件
-    bounds = tuple((0, 1) for _ in range(len(symbols)))
+    bounds = tuple((0, MAX_WEIGHT) for _ in range(len(symbols)))  # 单只股票最大10%
 
     # 优化
     result = minimize(

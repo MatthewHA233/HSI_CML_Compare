@@ -1,0 +1,33 @@
+{
+  "index": "HSI",
+  "name": "恒生指数",
+  "date_range": {
+    "start": "2005-02-28",
+    "end": "2024-12-31",
+    "trading_days": 239,
+    "years": 20.0
+  },
+  "returns": {
+    "mean_daily": 0.0015889016629862427,
+    "annualized": 0.019066819955834913,
+    "cagr": 0.019168781400562995,
+    "total_return": 0.46191540546390425
+  },
+  "risk": {
+    "std_daily": 0.06498167237788595,
+    "std_annualized": 0.22510311623858711,
+    "downside_std_annualized": 0.16545708854454763,
+    "max_drawdown": -0.5913711088529238,
+    "var_95": -0.10439482160243373
+  },
+  "risk_adjusted_metrics": {
+    "sharpe_ratio": -0.026357609540493886,
+    "sortino_ratio": -0.03585932821831106,
+    "risk_free_rate": 0.025
+  },
+  "position": {
+    "return": 0.019066819955834913,
+    "risk": 0.22510311623858711,
+    "description": "在风险-收益坐标系中的位置"
+  }
+}
