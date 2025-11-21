@@ -157,6 +157,21 @@ def main():
     print(f"  处理极端值: {extreme_count:,} 个")
     print()
 
+    # 【额外过滤】剔除超过±100%的极端月度收益率
+    print("【过滤极端月度收益率】")
+    MAX_MONTHLY_RETURN = 1.0  # ±100%阈值（对数收益率）
+
+    extreme_mask = np.abs(returns_data_winsorized.values) > MAX_MONTHLY_RETURN
+    extreme_filtered_count = extreme_mask.sum()
+
+    # 将极端值设为0（代表异常/停牌）
+    returns_data_winsorized.values[extreme_mask] = 0.0
+
+    print(f"  阈值: ±{MAX_MONTHLY_RETURN * 100:.0f}% (±{MAX_MONTHLY_RETURN:.2f})")
+    print(f"  过滤数据点: {extreme_filtered_count:,} 个")
+    print(f"  说明: 单月涨跌幅>100%通常是仙股/停牌异常")
+    print()
+
     # 更新DataFrame
     df_returns[date_cols] = returns_data_winsorized
 
@@ -241,6 +256,12 @@ def main():
         f.write("  - 对数收益率具有时间可加性\n")
         f.write("  - 适用于连续复利计算\n")
         f.write("  - 近似正态分布，适合统计分析\n\n")
+
+        f.write("数据处理步骤:\n")
+        f.write("  1. 缺失/停牌处理: P(t-1)缺失或=0 → return=0\n")
+        f.write(f"  2. Winsorize极端值: 上下各{WINSORIZE_LIMITS[0]*100:.0f}%\n")
+        f.write(f"  3. 阈值过滤: 剔除单月涨跌幅>±{MAX_MONTHLY_RETURN*100:.0f}%\n")
+        f.write(f"     (过滤了 {extreme_filtered_count:,} 个异常数据点)\n\n")
 
         f.write("年化公式:\n")
         f.write(f"  - 年化收益率 = 月均收益率 × {MONTHS_PER_YEAR}\n")
