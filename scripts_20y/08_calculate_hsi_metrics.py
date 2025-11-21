@@ -29,7 +29,7 @@ warnings.filterwarnings('ignore')
 
 # 路径配置
 BASE_DIR = Path(__file__).parent.parent
-INPUT_RETURNS = BASE_DIR / "处理后数据_20y" / "02_恒指价格" / r"hsi_returns.csv"
+INPUT_RETURNS = BASE_DIR / "处理后数据_20y" / "04_收益率" / r"hsi_returns.csv"  # HSI收益率在04步骤输出
 INPUT_PRICES = BASE_DIR / "处理后数据_20y" / "02_恒指价格" / r"hsi_prices.csv"
 OUTPUT_METRICS = BASE_DIR / "处理后数据_20y" / "08_恒指指标" / r"hsi_metrics.json"
 OUTPUT_REPORT = BASE_DIR / "处理后数据_20y" / "08_恒指指标" / r"hsi_metrics_数据分析报告.txt"
