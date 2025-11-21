@@ -260,19 +260,20 @@ def main():
         # 八、质量检查
         f.write("八、质量检查\n")
         f.write("-" * 70 + "\n")
-        f.write(f"缺失值: 0 个 (100%完整)\n")
+        f.write(f"缺失值: {missing_count:,} 个 (保留NaN，不填充)\n")
+        f.write(f"数据完整度: {(1 - missing_count / (len(df_cleaned) * len(date_cols))) * 100:.2f}%\n")
         f.write(f"重复股票代码: 0 个\n")
-        f.write(f"异常值: 已处理 (Winsorize)\n")
+        f.write(f"价格异常值处理: 不处理（在收益率层面处理）\n")
         f.write(f"日期对齐: 完全对齐\n\n")
 
         # 九、说明
         f.write("九、说明\n")
         f.write("-" * 70 + "\n")
-        f.write("1. 筛选标准: 保留缺失率<20%的股票，确保数据质量\n")
-        f.write("2. 缺失值处理: 前向填充保持价格连续性，避免引入偏差\n")
-        f.write("3. 极端值处理: Winsorize方法限制极端值影响，保留数据分布特征\n")
+        f.write("1. 筛选标准: 保留缺失率<20%且期末价格≥0.05元的股票\n")
+        f.write("2. 缺失值处理: 保留NaN不填充，在步骤4计算收益率时处理\n")
+        f.write("3. 价格处理原则: 不填充、不Winsorize，所有处理在收益率层面\n")
         f.write("4. 数据用途: 本数据将用于计算收益率、协方差矩阵和构建有效前沿\n")
-        f.write("5. 质量保证: 所有股票数据完整，无缺失值，适合进行投资组合优化分析\n\n")
+        f.write("5. 质量保证: 筛选后股票数据质量较高，适合投资组合优化分析\n\n")
 
     print(f"  报告文件: {OUTPUT_REPORT}")
     print()
